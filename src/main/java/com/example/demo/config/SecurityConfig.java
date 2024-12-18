@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -7,7 +8,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 
 import java.util.List;
 
@@ -30,6 +33,10 @@ public class SecurityConfig {
                 .requestMatchers("/api/user/home").permitAll()
                 .requestMatchers("/api/user/logout").permitAll()
                 .anyRequest().authenticated()
+            )
+            .exceptionHandling(customizer -> customizer
+                    .accessDeniedHandler(accessDeniedHandler())
+                    .authenticationEntryPoint(authenticationEntryPoint())
             );
         return http.build();
     }
@@ -48,5 +55,21 @@ public class SecurityConfig {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("Encoded password for 'password': " + encoder.encode("password"));
         return encoder;
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("Endpoint not found.");
+        };
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.getWriter().write("Endpoint not found.");
+        };
     }
 }
