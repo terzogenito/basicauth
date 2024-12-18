@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.constant.ApplicationConstants;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,7 @@ public class HomeController {
             String username = userDetails[0];
             String password = userDetails[1];
 
-            if ("user".equals(username) && "password".equals(password)) {
+            if (ApplicationConstants.DEFAULT_USERNAME.equals(username) && ApplicationConstants.DEFAULT_PASSWORD.equals(password)) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("username", username);
                 response.put("message", "Login Successful! Access /home for secured content.");

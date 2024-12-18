@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+import com.example.demo.constant.ApplicationConstants;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,14 +47,13 @@ public class SecurityConfig {
         AuthenticationManagerBuilder authBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         authBuilder
             .inMemoryAuthentication()
-            .withUser("user").password(passwordEncoder.encode("password")).roles("USER");
+            .withUser(ApplicationConstants.DEFAULT_USERNAME).password(passwordEncoder.encode(ApplicationConstants.DEFAULT_PASSWORD)).roles("USER");
         return authBuilder.build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         PasswordEncoder encoder = new BCryptPasswordEncoder();
-        System.out.println("Encoded password for 'password': " + encoder.encode("password"));
         return encoder;
     }
 
